@@ -1,4 +1,4 @@
-package mg.ando.dao.annot;
+package mg.ando.dao.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

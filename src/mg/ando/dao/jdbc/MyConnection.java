@@ -1,4 +1,4 @@
-package mg.ando.dao.database;
+package mg.ando.dao.jdbc;
 
 import java.sql.*;
 

@@ -1,4 +1,4 @@
-package mg.ando.dao.database;
+package mg.ando.dao.jdbc;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -7,15 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-import mg.ando.dao.annot.Column;
-import mg.ando.dao.annot.PrimaryKey;
-import mg.ando.dao.util.DBUtil;
+import mg.ando.dao.annotation.Column;
+import mg.ando.dao.annotation.PrimaryKey;
+import mg.ando.dao.util.Utilities;
 
 public class ObjectDB {
 
     // select
     String selectQuery(Object obj) {
-        String result = "select * from " + DBUtil.getTableName(obj);
+        String result = "select * from " + Utilities.getTableName(obj);
         String where = " where 1 = 1 ";
         Field[] tabFields = obj.getClass().getDeclaredFields();
 
@@ -23,9 +23,9 @@ public class ObjectDB {
             Field field = tabFields[i];
 
             if (field.isAnnotationPresent(Column.class)) {
-                String columnName = DBUtil.getColumName(field);
+                String columnName = Utilities.getColumName(field);
                 String fieldName = field.getName();
-                Object resultGetter = DBUtil.resultGetter(obj, fieldName);
+                Object resultGetter = Utilities.resultGetter(obj, fieldName);
 
                 if (resultGetter != null) {
                     String resultGetterStr = resultGetter.toString();
@@ -42,7 +42,7 @@ public class ObjectDB {
                     if (field.getAnnotation(Column.class).isNumber()) {
                         where += resultGetter;
                     } else {
-                        where += DBUtil.toString(resultGetter.toString());
+                        where += Utilities.toString(resultGetter.toString());
                     }
 
                     where += ")";
@@ -66,7 +66,7 @@ public class ObjectDB {
         ps = connection.prepareStatement(query);
         rs = ps.executeQuery();
         while (rs.next()) {
-            result.addElement(DBUtil.createClass(this, rs));
+            result.addElement(Utilities.createClass(this, rs));
         }
 
         return result;
@@ -88,7 +88,7 @@ public class ObjectDB {
 
     // insert
     String insertQuery(Object obj) {
-        String result = "insert into " + DBUtil.getTableName(obj);
+        String result = "insert into " + Utilities.getTableName(obj);
         Field[] tabFields = obj.getClass().getDeclaredFields();
         String columns = " (";
         String values = " (";
@@ -97,9 +97,9 @@ public class ObjectDB {
             Field field = tabFields[i];
 
             if (field.isAnnotationPresent(Column.class)) {
-                String columnName = DBUtil.getColumName(field);
+                String columnName = Utilities.getColumName(field);
                 String fieldName = field.getName();
-                Object resultGetter = DBUtil.resultGetter(obj, fieldName);
+                Object resultGetter = Utilities.resultGetter(obj, fieldName);
                 if (resultGetter == null) {
                     resultGetter = "null";
                 }
@@ -109,9 +109,9 @@ public class ObjectDB {
                 if (field.isAnnotationPresent(PrimaryKey.class)) {
 
                     if (!field.getAnnotation(Column.class).isNumber()) {
-                        values += "concat(" + DBUtil.toString(field.getAnnotation(PrimaryKey.class).prefix()) + ",";
+                        values += "concat(" + Utilities.toString(field.getAnnotation(PrimaryKey.class).prefix()) + ",";
                     }
-                    values += " nextval(" + DBUtil.toString(field.getAnnotation(PrimaryKey.class).seqName()) + ")";
+                    values += " nextval(" + Utilities.toString(field.getAnnotation(PrimaryKey.class).seqName()) + ")";
                     if (!field.getAnnotation(Column.class).isNumber()) {
                         values += ")";
                     }
@@ -120,7 +120,7 @@ public class ObjectDB {
                     if (field.getAnnotation(Column.class).isNumber() || resultGetter.equals("null")) {
                         values += resultGetter;
                     } else {
-                        values += DBUtil.toString(resultGetter.toString());
+                        values += Utilities.toString(resultGetter.toString());
                     }
                 }
 
@@ -158,16 +158,16 @@ public class ObjectDB {
             Field field = tabFields[i];
 
             if (field.isAnnotationPresent(Column.class)) {
-                String columnName = DBUtil.getColumName(field);
+                String columnName = Utilities.getColumName(field);
                 String fieldName = field.getName();
-                Object resultGetter = DBUtil.resultGetter(obj, fieldName);
+                Object resultGetter = Utilities.resultGetter(obj, fieldName);
 
                 result += columnName + " = ";
 
                 if (field.getAnnotation(Column.class).isNumber()) {
                     result += resultGetter.toString();
                 } else {
-                    result += DBUtil.toString(resultGetter.toString());
+                    result += Utilities.toString(resultGetter.toString());
                 }
 
                 if (i < tabFields.length - 1) {
@@ -183,15 +183,15 @@ public class ObjectDB {
         String result = " where 1 = 1 ";
 
         for (int i = 0; i < tabFieldName.length; i++) {
-            Field field = DBUtil.getFieldByName(obj, tabFieldName[i]);
-            Object resultGetter = DBUtil.resultGetter(obj, tabFieldName[i]);
+            Field field = Utilities.getFieldByName(obj, tabFieldName[i]);
+            Object resultGetter = Utilities.resultGetter(obj, tabFieldName[i]);
 
             result += " and " + tabFieldName[i] + " = ";
 
             if (field.getAnnotation(Column.class).isNumber()) {
                 result += resultGetter.toString();
             } else {
-                result += DBUtil.toString(resultGetter.toString());
+                result += Utilities.toString(resultGetter.toString());
             }
         }
 
@@ -199,7 +199,7 @@ public class ObjectDB {
     }
 
     String updateQuery(Object obj, String[] tabFieldNameCondition) {
-        return ("update " + DBUtil.getTableName(obj) + set(obj) + where(obj, tabFieldNameCondition));
+        return ("update " + Utilities.getTableName(obj) + set(obj) + where(obj, tabFieldNameCondition));
     }
 
     public void update(Connection connection, String[] tabFieldNameCondition) throws SQLException {
@@ -215,7 +215,7 @@ public class ObjectDB {
 
     // delete
     String deleteQuery(Object obj, String[] tabFieldNameCondition) {
-        return ("delete from " + DBUtil.getTableName(obj) + where(obj, tabFieldNameCondition));
+        return ("delete from " + Utilities.getTableName(obj) + where(obj, tabFieldNameCondition));
     }
 
     public void delete(Connection connection, String[] tabFieldNameCondition) throws SQLException {

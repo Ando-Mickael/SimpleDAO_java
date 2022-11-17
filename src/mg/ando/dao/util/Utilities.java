@@ -4,10 +4,10 @@ import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.util.Vector;
 
-import mg.ando.dao.annot.Column;
-import mg.ando.dao.annot.Table;
+import mg.ando.dao.annotation.Column;
+import mg.ando.dao.annotation.Table;
 
-public class DBUtil {
+public class Utilities {
 
 	public static String getTableName(Object obj) {
 		String result = new String();
