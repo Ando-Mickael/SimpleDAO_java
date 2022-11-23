@@ -19,11 +19,9 @@ public class ObjectDB {
         String where = " where 1 = 1 ";
         Field[] tabFields = obj.getClass().getDeclaredFields();
 
-        for (int i = 0; i < tabFields.length; i++) {
-            Field field = tabFields[i];
-
+        for (Field field : tabFields) {
             if (field.isAnnotationPresent(Column.class)) {
-                String columnName = Utilities.getColumName(field);
+                String columnName = Utilities.getColumnName(field);
                 String fieldName = field.getName();
                 Object resultGetter = Utilities.resultGetter(obj, fieldName);
 
@@ -39,7 +37,7 @@ public class ObjectDB {
                         where += " = ";
                     }
 
-                    if (field.getAnnotation(Column.class).isNumber()) {
+                    if (Utilities.isNumber(field)) {
                         where += resultGetter;
                     } else {
                         where += Utilities.toString(resultGetter.toString());
@@ -87,49 +85,49 @@ public class ObjectDB {
     }
 
     // insert
-    String insertQuery(Object obj) {
+    public static String insertQuery(Object obj) {
         String result = "insert into " + Utilities.getTableName(obj);
-        Field[] tabFields = obj.getClass().getDeclaredFields();
+        Vector<Field> vectFields = Utilities.getVectColumns(obj);
         String columns = " (";
         String values = " (";
 
-        for (int i = 0; i < tabFields.length; i++) {
-            Field field = tabFields[i];
-
-            if (field.isAnnotationPresent(Column.class)) {
-                String columnName = Utilities.getColumName(field);
-                String fieldName = field.getName();
-                Object resultGetter = Utilities.resultGetter(obj, fieldName);
-                if (resultGetter == null) {
-                    resultGetter = "null";
-                }
-
-                columns += columnName;
+        for (int i = 0; i < vectFields.size(); i++) {
+            Field field = vectFields.elementAt(i);
+            String columnName = Utilities.getColumnName(field);
+            String fieldName = field.getName();
+            Object resultGetter = Utilities.resultGetter(obj, fieldName);
+            
+            if (resultGetter == null) {
+                resultGetter = "null";
+            }
+            
+            columns += columnName;
 
                 if (field.isAnnotationPresent(PrimaryKey.class)) {
 
-                    if (!field.getAnnotation(Column.class).isNumber()) {
+                    if (!Utilities.isNumber(field)) {
                         values += "concat(" + Utilities.toString(field.getAnnotation(PrimaryKey.class).prefix()) + ",";
                     }
                     values += " nextval(" + Utilities.toString(field.getAnnotation(PrimaryKey.class).seqName()) + ")";
-                    if (!field.getAnnotation(Column.class).isNumber()) {
+                    if (!Utilities.isNumber(field)) {
                         values += ")";
                     }
 
                 } else {
-                    if (field.getAnnotation(Column.class).isNumber() || resultGetter.equals("null")) {
+                    if (Utilities.isNumber(field) || resultGetter.equals("null")) {
                         values += resultGetter;
                     } else {
                         values += Utilities.toString(resultGetter.toString());
                     }
                 }
 
-                if (i < (tabFields.length - 1)) {
+                if (i < (vectFields.size() - 1)) {
                     columns += ", ";
                     values += ", ";
                 }
-            }
+            
         }
+
         columns += ")";
         values += ")";
 
@@ -158,13 +156,13 @@ public class ObjectDB {
             Field field = tabFields[i];
 
             if (field.isAnnotationPresent(Column.class)) {
-                String columnName = Utilities.getColumName(field);
+                String columnName = Utilities.getColumnName(field);
                 String fieldName = field.getName();
                 Object resultGetter = Utilities.resultGetter(obj, fieldName);
 
                 result += columnName + " = ";
 
-                if (field.getAnnotation(Column.class).isNumber()) {
+                if (Utilities.isNumber(field)) {
                     result += resultGetter.toString();
                 } else {
                     result += Utilities.toString(resultGetter.toString());
@@ -188,7 +186,7 @@ public class ObjectDB {
 
             result += " and " + tabFieldName[i] + " = ";
 
-            if (field.getAnnotation(Column.class).isNumber()) {
+            if (Utilities.isNumber(field)) {
                 result += resultGetter.toString();
             } else {
                 result += Utilities.toString(resultGetter.toString());

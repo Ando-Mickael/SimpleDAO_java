@@ -7,10 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface PrimaryKey {
-
-    public String seqName();
-
-    public String prefix() default "";
+public @interface Number {
 
 }

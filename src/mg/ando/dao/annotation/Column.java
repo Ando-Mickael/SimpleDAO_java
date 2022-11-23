@@ -9,8 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Column {
 
-    public String name();
-
-    public boolean isNumber() default false;
+    public String name() default "";
 
 }
