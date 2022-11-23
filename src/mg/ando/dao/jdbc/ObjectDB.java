@@ -85,7 +85,7 @@ public class ObjectDB {
     }
 
     // insert
-    public static String insertQuery(Object obj) {
+    String insertQuery(Object obj) {
         String result = "insert into " + Utilities.getTableName(obj);
         Vector<Field> vectFields = Utilities.getVectColumns(obj);
         String columns = " (";
