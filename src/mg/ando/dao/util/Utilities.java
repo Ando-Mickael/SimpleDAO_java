@@ -6,132 +6,103 @@ import java.util.Vector;
 
 import mg.ando.dao.annotation.Column;
 import mg.ando.dao.annotation.Table;
-import mg.ando.dao.annotation.Number;
 
 public class Utilities {
 
     public static String getTableName(Object obj) {
-        String result = new String();
-
         if (obj.getClass().isAnnotationPresent(Table.class)) {
-            result = obj.getClass().getAnnotation(Table.class).name();
-        } else {
-            result = obj.getClass().getSimpleName();
+            return (obj.getClass().getAnnotation(Table.class).name());
         }
-
-        return result;
+        return (obj.getClass().getSimpleName());
     }
 
-    public static Vector<Field> getVectColumns(Object obj) {
-        Vector<Field> result = new Vector<>();
-        Field[] tabFields = obj.getClass().getDeclaredFields();
+    public static String getColumnName(Field field) {
+        if (field.isAnnotationPresent(Column.class) && !field.getAnnotation(Column.class).name().equals("")) {
+            return (field.getAnnotation(Column.class).name());
+        }
+        return (field.getName());
+    }
 
-        for (Field field : tabFields) {
+    public static Vector<Field> getVectColumn(Object obj) {
+        Vector<Field> result = new Vector<>();
+        Field[] tabField = obj.getClass().getDeclaredFields();
+
+        for (Field field : tabField) {
             if (field.isAnnotationPresent(Column.class)) {
                 result.addElement(field);
             }
         }
-
-        return result;
-    }
-    
-    public static String getColumnName(Field field) {
-        String result = new String();
-
-        if (field.isAnnotationPresent(Column.class) && !field.getAnnotation(Column.class).name().equals("")) {
-            result = field.getAnnotation(Column.class).name();
-        } else {
-            result = field.getName();
-        }
-
         return result;
     }
 
     public static boolean isNumber(Field field) {
-        return field.isAnnotationPresent(Number.class);
+        return (field.getAnnotation(Column.class).number());
     }
 
     public static String toString(String word) {
-        return ("'" + word + "'");
+        return (String.format("'%s'", word));
     }
 
     private static String myCapitalize(String word) {
-        String result = new String();
         String firstChar = word.substring(0, 1);
-        
-        result = firstChar.toUpperCase() + word.substring(1, word.length());
-
-        return result;
+        return (firstChar.toUpperCase() + word.substring(1, word.length()));
     }
 
-    public static String createGetter(String colName) {
-        return ("get" + myCapitalize(colName));
+    public static String createGetter(String fieldName) {
+        return ("get" + myCapitalize(fieldName));
     }
 
-    public static String createSetter(String colName) {
-        return ("set" + myCapitalize(colName));
+    public static String createSetter(String fieldName) {
+        return ("set" + myCapitalize(fieldName));
     }
 
-    public static Object resultGetter(Object obj, String columnName) {
-        Object result = null;
-        String methodName = createGetter(columnName);
+    public static Object resultGetter(Object obj, String fieldName) throws Exception {
+        String methodName = createGetter(fieldName);
+        return (obj.getClass().getMethod(methodName).invoke(obj));
+    }
 
-        try {
-            result = obj.getClass().getMethod(methodName).invoke(obj);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        return result;
+    public static Object resultGetter(Object obj, Field field) throws Exception {
+        String methodName = createGetter(field.getName());
+        return (obj.getClass().getMethod(methodName).invoke(obj));
     }
 
     public static Field getFieldByName(Object obj, String fieldName) {
-        Field result = null;
-        Field[] tabFields = obj.getClass().getDeclaredFields();
+        Field[] tabField = obj.getClass().getDeclaredFields();
 
-        for (Field field : tabFields) {
+        for (Field field : tabField) {
             String tmpName = field.getName();
-            
+
             if (fieldName.equalsIgnoreCase(tmpName)) {
-                result = field;
-                break;
+                return field;
             }
+        }
+        return null;
+    }
+
+    public static Object createClass(Object obj, ResultSet rs) throws Exception {
+        Object result = obj.getClass().newInstance();
+        Vector<Field> vectField = getVectColumn(obj);
+
+        for (Field field : vectField) {
+            String fieldName = field.getName();
+            String setterName = createSetter(fieldName);
+            Object rsValue = rs.getString(fieldName);
+            String fieldTypeName = field.getType().getSimpleName();
+
+            if (fieldTypeName.equalsIgnoreCase("Integer")) {
+                rsValue = Integer.parseInt((String) rsValue);
+            } else if (fieldTypeName.equalsIgnoreCase("Double")) {
+                rsValue = Double.parseDouble((String) rsValue);
+            } else if (fieldTypeName.equalsIgnoreCase("Float")) {
+                rsValue = Float.parseFloat((String) rsValue);
+            } else {
+                rsValue = (String) rsValue;
+            }
+
+            result.getClass().getMethod(setterName, field.getType()).invoke(result, rsValue);
         }
 
         return result;
     }
 
-    public static Object createClass(Object obj, ResultSet rs) {
-        Object result = null;
-        Field[] tabFields = null;
-
-        try {
-            result = obj.getClass().newInstance();
-            tabFields = obj.getClass().getDeclaredFields();
-
-            for (Field field : tabFields) {
-                String colName = field.getName();
-                String methodName = createSetter(colName);
-                Object resultRS = rs.getString(colName);;
-                String fieldTypeName = field.getType().getSimpleName();
-
-                if (fieldTypeName.equalsIgnoreCase("Integer")) {
-                    resultRS = Integer.parseInt((String) resultRS);
-                } else if (fieldTypeName.equalsIgnoreCase("Double")) {
-                    resultRS = Double.parseDouble((String) resultRS);
-                } else if (fieldTypeName.equalsIgnoreCase("Float")) {
-                    resultRS = Float.parseFloat((String) resultRS);
-                } else {
-                    resultRS = (String) resultRS;
-                }
-
-                result.getClass().getMethod(methodName, field.getType()).invoke(result, resultRS);
-            }
-
-        } catch (Exception e) {
-        }
-
-        return result;
-    }
-    
 }

@@ -1,19 +1,19 @@
 package model;
 
 import mg.ando.dao.annotation.Column;
-import mg.ando.dao.annotation.Number;
 import mg.ando.dao.annotation.PrimaryKey;
 import mg.ando.dao.jdbc.ObjectDB;
 
 public class Personne extends ObjectDB {
 
-    @Column @Number @PrimaryKey(seqName = "s_personne")
+    @Column(number = true)
+    @PrimaryKey(autoIncrement = true)
     Integer id;
 
     @Column
     String nom;
 
-    @Column @Number
+    @Column(number = true)
     Integer age;
 
     String[] tabNom;
