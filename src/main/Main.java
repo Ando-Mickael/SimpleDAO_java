@@ -17,10 +17,7 @@ public class Main {
 //            System.out.println(tmp.toString());
 //        }
 
-        Spectacle s = (Spectacle) new Spectacle(4, null, null, null, null).select(connection).get(0);
-        s.setTitre("aaa");
-        s.update(connection, new String[]{"id"});
-        System.out.println(s.toString());
+        Vector<Spectacle> spectacles = new Spectacle(null, null, "2020-01-01 0:00:00", Float.valueOf(1000), null).select(connection);
 
     }
 }

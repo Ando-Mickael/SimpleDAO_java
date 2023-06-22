@@ -16,23 +16,23 @@ public class Spectacle extends ObjectDB {
     String titre;
 
     @Column(name = "date_prestation", isNumber = false)
-    String date_prestation;
+    String datePrestation;
 
     @Column(name = "prix_lieu", isNumber = true)
-    Float prix_lieu;
+    Float prixLieu;
 
     @Column(name = "lieuid", isNumber = true)
     Integer lieuid;
 
-    public Spectacle() {
-    }
-
-    public Spectacle(Integer id, String titre, String date_prestation, Float prix_lieu, Integer lieuid) {
+    public Spectacle(Integer id, String titre, String datePrestation, Float prixLieu, Integer lieuid) {
         this.id = id;
         this.titre = titre;
-        this.date_prestation = date_prestation;
-        this.prix_lieu = prix_lieu;
+        this.datePrestation = datePrestation;
+        this.prixLieu = prixLieu;
         this.lieuid = lieuid;
+    }
+
+    public Spectacle() {
     }
 
     public Integer getId() {
@@ -51,20 +51,20 @@ public class Spectacle extends ObjectDB {
         this.titre = titre;
     }
 
-    public String getDate_prestation() {
-        return date_prestation;
+    public String getDatePrestation() {
+        return datePrestation;
     }
 
-    public void setDate_prestation(String date_prestation) {
-        this.date_prestation = date_prestation;
+    public void setDatePrestation(String datePrestation) {
+        this.datePrestation = datePrestation;
     }
 
-    public Float getPrix_lieu() {
-        return prix_lieu;
+    public Float getPrixLieu() {
+        return prixLieu;
     }
 
-    public void setPrix_lieu(Float prix_lieu) {
-        this.prix_lieu = prix_lieu;
+    public void setPrixLieu(Float prixLieu) {
+        this.prixLieu = prixLieu;
     }
 
     public Integer getLieuid() {
@@ -73,11 +73,6 @@ public class Spectacle extends ObjectDB {
 
     public void setLieuid(Integer lieuid) {
         this.lieuid = lieuid;
-    }
-
-    @Override
-    public String toString() {
-        return "Spectacle{" + "id=" + id + ", titre=" + titre + ", date_prestation=" + date_prestation + ", prix_lieu=" + prix_lieu + ", lieuid=" + lieuid + '}';
     }
 
 }

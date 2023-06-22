@@ -138,11 +138,11 @@ public class Query {
     }
     
     public static String update(Object obj, String[] tabFieldName) throws Exception {
-        return ("update " + Utilities.getTableName(obj) + set(obj) + where(obj, tabFieldName));
+        return ("update " + Utilities.getTableName(obj) + set(obj) + where(obj, tabFieldName) + " returning *");
     }
     
     public static String delete(Object obj) throws Exception {
-        return ("delete from " + Utilities.getTableName(obj) + where(obj, null));
+        return ("delete from " + Utilities.getTableName(obj) + where(obj, null) + " returning *");
     }
     
 }
