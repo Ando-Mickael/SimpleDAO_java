@@ -8,7 +8,7 @@ import model.Spectacle;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        Connection connection = MyConnection.pgConnection("localhost", "5432", "eval2", "ando", "ando");
+        Connection connection = MyConnection.createPostgresqlConnection("localhost", "5432", "eval2", "ando", "ando");
 
 //        Vector<Spectacle> v = new Spectacle().select(connection);
 //        System.out.println(v.size());

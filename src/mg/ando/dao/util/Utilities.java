@@ -36,7 +36,7 @@ public class Utilities {
     }
 
     public static boolean isNumber(Field field) {
-        return (field.getAnnotation(Column.class).number());
+        return (field.getAnnotation(Column.class).isNumber());
     }
 
     public static String toString(String word) {

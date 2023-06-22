@@ -6,14 +6,14 @@ import mg.ando.dao.jdbc.ObjectDB;
 
 public class Personne extends ObjectDB {
 
-    @Column(number = true)
+    @Column(isNumber = true)
     @PrimaryKey(autoIncrement = true)
     Integer id;
 
     @Column
     String nom;
 
-    @Column(number = true)
+    @Column(isNumber = true)
     Integer age;
 
     String[] tabNom;

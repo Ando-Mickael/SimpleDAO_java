@@ -7,7 +7,7 @@ public class MyConnection {
     public MyConnection() {
     }
 
-    public static Connection pgConnection(String host, String port, String dbname, String user, String passwd) {
+    public static Connection createPostgresqlConnection(String host, String port, String dbname, String user, String passwd) {
         Connection result = null;
         String strConn = "jdbc:postgresql://" + host + ":" + port + "/" + dbname;
 

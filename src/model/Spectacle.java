@@ -8,20 +8,20 @@ import mg.ando.dao.jdbc.ObjectDB;
 @Table(name = "spectacle")
 public class Spectacle extends ObjectDB {
 
-    @PrimaryKey(autoIncrement = true, seqName = "spectacle_id_seq")
-    @Column(name = "id", number = true)
+    @PrimaryKey(autoIncrement = true, sequenceName = "spectacle_id_seq")
+    @Column(name = "id", isNumber = true)
     Integer id;
 
-    @Column(name = "titre", number = false)
+    @Column(name = "titre", isNumber = false)
     String titre;
 
-    @Column(name = "date_prestation", number = false)
+    @Column(name = "date_prestation", isNumber = false)
     String date_prestation;
 
-    @Column(name = "prix_lieu", number = true)
+    @Column(name = "prix_lieu", isNumber = true)
     Float prix_lieu;
 
-    @Column(name = "lieuid", number = true)
+    @Column(name = "lieuid", isNumber = true)
     Integer lieuid;
 
     public Spectacle() {

@@ -100,9 +100,9 @@ public class Query {
                     values += "default";
                 } else {
                     if (!Utilities.isNumber(field)) {
-                        values += "concat(" + Utilities.toString(field.getAnnotation(PrimaryKey.class).prefix()) + ",";
+                        values += "concat(" + Utilities.toString(field.getAnnotation(PrimaryKey.class).prefixID()) + ",";
                     }
-                    values += " nextval(" + Utilities.toString(field.getAnnotation(PrimaryKey.class).seqName()) + ")";
+                    values += " nextval(" + Utilities.toString(field.getAnnotation(PrimaryKey.class).sequenceName()) + ")";
                     if (!Utilities.isNumber(field)) {
                         values += ")";
                     }

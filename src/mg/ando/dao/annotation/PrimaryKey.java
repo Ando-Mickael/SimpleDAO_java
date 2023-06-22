@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface PrimaryKey {
 
-    public String seqName() default "";
-    public String prefix() default "";
+    public String sequenceName() default "";
+    public String prefixID() default "";
     public boolean autoIncrement() default false;
 
 }

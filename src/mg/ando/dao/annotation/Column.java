@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 public @interface Column {
 
     public String name() default "";
-    public boolean number() default false;
+    public boolean isNumber() default false;
 
 }
