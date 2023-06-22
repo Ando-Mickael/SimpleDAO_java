@@ -7,6 +7,10 @@ public class ObjectDB {
 
     GenericDAO dao;
     
+    public ObjectDB() {
+        dao = new GenericDAO();
+    }
+    
     public Vector select(Connection connection) {
         return dao.select(this, connection);
     }

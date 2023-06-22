@@ -84,10 +84,10 @@ public class GenericDAO implements InterfaceDAO {
     }
     
     @Override
-    public void update(Object obj, Connection connection, String[] tabFieldName) {
+    public void update(Object obj, Connection connection, String[] columnsIdentifiers) {
         String query = "";
         try {
-            query = Query.update(obj, tabFieldName);
+            query = Query.update(obj, columnsIdentifiers);
             execute(query, connection);
         } catch (Exception ex) {
             System.out.println(ex);
